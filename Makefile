@@ -9,7 +9,8 @@ CXXFLAGS := -std=c++11
 LDFLAGS :=
 LDLIBS :=
 
-objects := main.o c_source.o
+# Create objects for all .c and .cpp in current directory
+objects := $(patsubst %.c, %.o, $(wildcard *.c)) $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
 $(TARGET) : $(objects)
 	$(CXX) -o test $^
