@@ -42,6 +42,12 @@ $(TARGET)_release: $(objects_release)
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $^
 
+# @TODO Placehoder for gcov
+.PHONY: gcov
+
+# @TODO Placeholder for unit test
+.PHONY: unittest
+
 .PHONY: clean
 clean:
 	-rm $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release)
