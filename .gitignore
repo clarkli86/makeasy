@@ -1,5 +1,6 @@
 # build
-test
+test_debug
+test_release
 *.o
 
 # VIM
