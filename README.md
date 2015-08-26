@@ -5,5 +5,5 @@ The main features are:
 # Placeholder variables for common settings includings CFLAGS, LDFLAGS
 # Generate and include make dependencies (TODO)
 # Support directories (TODO)
-# Support different targets (linux_debug, linux_release, windows, etc) (TODO: include sub makefiles? How to generate targets?)
+# Support different targets (linux_debug, linux_release, windows, etc) (TODO: include sub makefiles? How to generate targets? Use a json input file)
 # Different folders for debug and release builds

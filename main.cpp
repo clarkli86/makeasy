@@ -1,4 +1,5 @@
 #include <iostream>
+#include "defs.h"
 using namespace std;
 
 extern "C" int c_func();

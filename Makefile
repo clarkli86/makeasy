@@ -30,22 +30,21 @@ debug: $(TARGET)_debug
 .PHONY: release
 release: $(TARGET)_release
 
+# Include dependencies
+-include $(objects_debug:.o=.d)
+-include $(objects_release:.o=.d)
+
 $(TARGET)_debug : $(objects_debug)
 	$(CXX) -o $@ $^
 
 $(TARGET)_release: $(objects_release)
-	echo $^
 	$(CXX) -o $@ $^
 
 # Compile differently for debug and release targets
 # @TODO Create different folders for debug and release
 %.o : %.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $^
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(filter %.cpp, $^)
 	$(CXX) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
-
-# Include dependencies
--include $(objects_debug:.o=.d)
--include $(objects_release:.o=.d)
 
 # @TODO Placehoder for gcov
 .PHONY: gcov
