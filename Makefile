@@ -41,6 +41,11 @@ $(TARGET)_release: $(objects_release)
 # @TODO Create different folders for debug and release
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $^
+	$(CXX) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+
+# Include dependencies
+-include $(objects_debug:.o=.d)
+-include $(objects_release:.o=.d)
 
 # @TODO Placehoder for gcov
 .PHONY: gcov
