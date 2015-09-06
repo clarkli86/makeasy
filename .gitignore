@@ -2,6 +2,9 @@
 test_debug
 test_release
 *.o
+debug/
+release
+gmon.out
 
 # VIM
 *.swp

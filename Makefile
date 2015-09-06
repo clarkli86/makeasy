@@ -16,9 +16,8 @@ LDLIBS :=
 VPATH :=
 
 # Create objects for all .c and .cpp in current directory
-# @TODO: create different folders for debug and release
-objects_debug := $(patsubst %.c, %.o, $(wildcard *.c)) $(patsubst %.cpp, %.o, $(wildcard *.cpp))
-objects_release := $(patsubst %.c, %.o, $(wildcard *.c)) $(patsubst %.cpp, %.o, $(wildcard *.cpp))
+objects_debug := $(patsubst %.c, debug/%.o, $(wildcard *.c)) $(patsubst %.cpp, debug/%.o, $(wildcard *.cpp))
+objects_release := $(patsubst %.c, release/%.o, $(wildcard *.c)) $(patsubst %.cpp, release/%.o, $(wildcard *.cpp))
 
 .PHONY: all
 all : $(TARGET)_debug $(TARGET)_release
@@ -35,16 +34,31 @@ release: $(TARGET)_release
 -include $(objects_release:.o=.d)
 
 $(TARGET)_debug : $(objects_debug)
-	$(CXX) -o $@ $^
+	$(CXX) -g -pg -o $@ $^
 
 $(TARGET)_release: $(objects_release)
 	$(CXX) -o $@ $^
 
 # Compile differently for debug and release targets
-# @TODO Create different folders for debug and release
-%.o : %.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(filter %.cpp, $^)
+debug/%.o : %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -g -pg -c $(filter %.cpp, $^) -o $@
 	$(CXX) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+
+release/%.o : %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(filter %.cpp, $^) -o $@
+	$(CXX) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+
+debug/%.o : %.c
+	mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) $(CLAGS) -g -pg -c $(filter %.c, $^) -o $@
+	$(CC) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+
+release/%.o : %.c
+	mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) $(CLAGS) -c $(filter %.c, $^) -o $@
+	$(CC) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 # @TODO Placehoder for gcov
 .PHONY: gcov
