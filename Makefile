@@ -1,3 +1,9 @@
+### Begin command line arguments
+# If link to gtest source code
+LINK_GTEST ?= 0
+### End command line arguments
+
+# Target application name
 TARGET := test
 
 # used by both C and CXX. Applied implicity to $(CC)
