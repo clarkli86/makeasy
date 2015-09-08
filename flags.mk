@@ -2,38 +2,48 @@
 # @author: clark.li
 # @date: 2015/09/08
 #
-# Template Main Makefile for C/C++ applicatons.
-#
-# Change the values in this makefile to build your own sources
-#
-# Flags that can be optinally defined for additional libraries:
-#   USE_GTEST: Set it to 1 to link to gtest and use its main() as application entry
+# @TODO Defines your compiler and link flags here
 ####################################################################################################
 
 ####################################################################################################
-# Target application name
+# C only compiler flag
 ####################################################################################################
-TARGET := test
+CFLAGS += -std=c99
 
 ####################################################################################################
-# Source files
+# C++ only compiler flag
 ####################################################################################################
-include sources.mk
+CPPFLAGS += -std=c++11
 
 ####################################################################################################
-# Include compiler and linker flags
+# C/C++ common comiler flag
 ####################################################################################################
-include flags.mk
+CXXFLAGS += -Wall -Werror
 
 ####################################################################################################
-# Optional flags for gcc target
+# C/C++ common linker flag
 ####################################################################################################
-USE_GOOGLETEST ?= 1
-## When using googletest, it may be necessary to set its main folder
-GTEST_DIR ?= googletest
+LDFLAGS +=
+LDLIBS +=
 
 ####################################################################################################
-# Targets makefile
+# C/C++ common comiler flag for debug build
 ####################################################################################################
-#include targets/cpp.mk
-include gcc_base.mk
+debug_CPPFLAGS += -g -pg
+
+####################################################################################################
+# C/C++ common comiler flag for release build
+####################################################################################################
+release_CPPFLAGS +=
+
+####################################################################################################
+# C/C++ common linker flag for debug build
+####################################################################################################
+debug_LDFLAGS += -g -pg
+debug_LIBFLAGS +=
+
+####################################################################################################
+# C/C++ common linker flag for release build
+####################################################################################################
+release_LDFLAGS +=
+release_LIBFLAGS +=
