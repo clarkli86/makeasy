@@ -23,7 +23,7 @@
 # Link to googletest library and use it as application entry
 ###############################################################################
 ifeq (1, ${USE_GOOGLETEST})
-	include $(makefiles_dir)/targets/gtest.mk
+	include $(makefiles_dir)/targets/googletest.mk
 endif
 
 # Create objects for all .c and .cpp in current directory
