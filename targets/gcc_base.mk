@@ -25,6 +25,9 @@
 ifeq (1, ${USE_GOOGLETEST})
 	include $(makefiles_dir)/targets/googletest.mk
 endif
+ifeq (1, ${USE_GOOGLEMOCK})
+	include $(makefiles_dir)/targets/googlemock.mk
+endif
 
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
