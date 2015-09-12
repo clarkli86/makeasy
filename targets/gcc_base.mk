@@ -74,37 +74,43 @@ debug/%.o : %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(debug_CXXFLAGS) $(debug_CPPFLAGS) $(includes) \
 		-c $(filter %.cpp, $^) -o $@
-	$(CXX) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(debug_CXXFLAGS) $(debug_CPPFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(release_CXXFLAGS) $(release_CPPFLAGS) $(includes) \
 		-c $(filter %.cpp, $^) -o $@
-	$(CXX) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(release_CXXFLAGS) $(release_CPPFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 debug/%.o : %.cc
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(debug_CXXFLAGS) $(debug_CPPFLAGS) $(includes) \
 		-c $< -o $@
-	$(CXX) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(debug_CXXFLAGS) $(debug_CPPFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.cc
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(release_CXXFLAGS) $(release_CPPFLAGS) $(includes) \
 		-c $< -o $@
-	$(CXX) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(release_CXXFLAGS) $(release_CPPFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 debug/%.o : %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CXXFLAGS) $(CLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
 		-c $(filter %.c, $^) -o $@
-	$(CC) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CC) $(CXXFLAGS) $(CLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CXXFLAGS) $(CLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-c $(filter %.c, $^) -o $@
-	$(CC) $(includes) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CC) $(CXXFLAGS) $(CLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
+		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 # @TODO Placehoder for gcov
 .PHONY: gcov
