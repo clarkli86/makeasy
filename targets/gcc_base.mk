@@ -34,13 +34,23 @@ endif
 objects_debug = $(patsubst %.c, debug/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, debug/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, debug/%.o, $(filter %.cc, $(sources)))
 objects_release = $(patsubst %.c, release/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, release/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, release/%.o, $(filter %.cc, $(sources)))
 
+# Remove all references to upper level folders
+objects_debug := $(subst ../,, $(objects_debug))
+# Add upper level folders to implicit rule search path
+VPATH += .:..
+
+# @TODO
+# When I have more than one target (linux, smartfusion2), this all needs to defined in the top-level
+# makefile. linux and smartfusion2 need to be passed to the target makefiles as target name.
+# When top-level Makefile includes targets/gcc_base.mk and targets/smart_fusion_2.mk, the targets are
+# all, linux_debug, linux_release, smartfusion2_debug, smartfusion2_release
 .PHONY: all
 all : $(TARGET)_debug $(TARGET)_release
 
 # Debug target to print variable values
 .PHONY: target
 target:
-	echo $(objects_debug)
+	echo $(subst_debug)
 
 # debug and release are phony targets
 .PHONY: debug
