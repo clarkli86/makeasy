@@ -100,16 +100,16 @@ release/%.o : %.cc
 
 debug/%.o : %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CXXFLAGS) $(CLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
+	$(CC) $(CXXFLAGS) $(CFLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
 		-c $(filter %.c, $^) -o $@
-	$(CC) $(CXXFLAGS) $(CLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
+	$(CC) $(CXXFLAGS) $(CFLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CXXFLAGS) $(CLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
+	$(CC) $(CXXFLAGS) $(CFLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-c $(filter %.c, $^) -o $@
-	$(CC) $(CXXFLAGS) $(CLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
+	$(CC) $(CXXFLAGS) $(CFLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 # @TODO Placehoder for gcov
@@ -117,4 +117,4 @@ release/%.o : %.c
 
 .PHONY: clean
 clean:
-	-rm $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release)
+	-rm $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
