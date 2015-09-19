@@ -64,10 +64,10 @@ release: $(TARGET)_release
 -include $(objects_release:.o=.d)
 
 $(TARGET)_debug : $(objects_debug)
-	$(CXX) $(LDFLAGS) $(LDLIBS) $(debug_LDFLAGS) $(debug_LIBFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) $(debug_LDFLAGS) -o $@ $^ $(LDLIBS) $(debug_LIBFLAGS)
 
 $(TARGET)_release: $(objects_release)
-	$(CXX) $(LDFLAGS) $(LDLIBS) $(release_LDFLAGS) $(release_LIBFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) $(release_LDFLAGS) -o $@ $^ $(LDLIBS) $(release_LIBFLAGS)
 
 # Compile differently for debug and release targets
 debug/%.o : %.cpp
