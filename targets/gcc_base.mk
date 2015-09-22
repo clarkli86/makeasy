@@ -6,7 +6,7 @@
 # dependencies files.
 #
 # Variables that need to be defined outside this makefile:
-#   includes: C/C++ header directories
+#   include_dirs: C/C++ header directories
 #   sources: C/C++ sources that need to be compiled and linked
 #   TARGET: Target application name
 #   CXX: C++ compiler
@@ -38,6 +38,9 @@ objects_release = $(patsubst %.c, release/%.o, $(filter %.c, $(sources))) $(pats
 objects_debug := $(subst ../,, $(objects_debug))
 # Add upper level folders to implicit rule search path
 VPATH += .:..
+
+# Process include path
+CXXFLAGS += $(addprefix -I, $(include_dirs))
 
 # @TODO
 # When I have more than one target (linux, smartfusion2), this all needs to defined in the top-level
