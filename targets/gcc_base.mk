@@ -117,4 +117,4 @@ release/%.o : %.c
 
 .PHONY: clean
 clean:
-	-rm $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
+	rm -rf $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
