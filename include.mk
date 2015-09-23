@@ -5,6 +5,9 @@
 # Include to use functions in this makefile library
 #
 ####################################################################################################
+# Get directory of this makefile
+topdir := $(dir $(lastword $(MAKEFILE_LIST)))
+
 # Define this target before any other
 .PHONY: all
 all : debug release
@@ -47,7 +50,7 @@ CPPFLAGS := $(5)
 CXXFLAGS := $(6)
 LDFLAGS := $(7)
 LDLIBS := $(8)
-include $(MAKEFILES_DIR)/targets/gcc_base.mk
+include $(topdir)/targets/gcc_base.mk
 
 $(eval, $(call, clear_variables))
 endef
