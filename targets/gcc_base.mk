@@ -42,26 +42,6 @@ VPATH += .:..
 # Process include path
 CXXFLAGS += $(addprefix -I, $(include_dirs))
 
-# @TODO
-# When I have more than one target (linux, smartfusion2), this all needs to defined in the top-level
-# makefile. linux and smartfusion2 need to be passed to the target makefiles as target name.
-# When top-level Makefile includes targets/gcc_base.mk and targets/smart_fusion_2.mk, the targets are
-# all, linux_debug, linux_release, smartfusion2_debug, smartfusion2_release
-.PHONY: all
-all : $(TARGET)_debug $(TARGET)_release
-
-# Debug target to print variable values
-.PHONY: target
-target:
-	echo $(sources)
-
-# debug and release are phony targets
-.PHONY: debug
-debug: $(TARGET)_debug
-
-.PHONY: release
-release: $(TARGET)_release
-
 # Include dependencies
 -include $(objects_debug:.o=.d)
 -include $(objects_release:.o=.d)
@@ -115,9 +95,14 @@ release/%.o : %.c
 	$(CC) $(CXXFLAGS) $(CFLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
-# @TODO Placehoder for gcov
-.PHONY: gcov
-
-.PHONY: clean
-clean:
+# @TODO Variables used in the command get overriten when the second target is added,
+# when running make clean, it cleans test2_debug test2_release twice because the variable in target and pre-requisites are expanded when makefile is read, but
+# the variables in the rule are expanded when the target is executed. During that phase, TARGET has been set to test2
+.PHONY: $(TARGET)_clean
+$(TARGET)_clean :
 	rm -rf $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
+
+# when make debug at top level, $(TARGET)_debug will be built
+debug: $(TARGET)_debug
+release: $(TARGET)_release
+clean: $(TARGET)_clean

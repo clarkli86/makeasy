@@ -5,6 +5,19 @@
 # Include to use functions in this makefile library
 #
 ####################################################################################################
+# Define this target before any other
+.PHONY: all
+all : debug release
+
+# Target-specific pre-requisites will be added to these targets in targets/makefiles
+.PHONY: clean
+clean :
+
+.PHONY: debug
+debug:
+
+.PHONY: release
+release:
 
 # $(call clear_variables)
 define clear_variables
