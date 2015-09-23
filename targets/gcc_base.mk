@@ -95,12 +95,20 @@ release/%.o : %.c
 	$(CC) $(CXXFLAGS) $(CFLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
-# @TODO Variables used in the command get overriten when the second target is added,
-# when running make clean, it cleans test2_debug test2_release twice because the variable in target and pre-requisites are expanded when makefile is read, but
-# the variables in the rule are expanded when the target is executed. During that phase, TARGET has been set to test2
+# Variables in target and pre-requisites are expanded when makefile is read, but
+# the variables in the rule are expanded when the target is executed. Thus variables like TARGET, CC_FLAGS may have been overwriten when the rule gets executed so
+# they should not be referenced directly in the rule.
+# To overcome this issue, a local variable STORED_TARGET_NAME is created to save the
+# target name when this makefile is read. It is also an empty target so $(TARGET)_clean also remembers the target name when this makefile is read.
+#
+# Although target name can be retrieved by spliting $(TARGET)_clean using underscore, the method above employs one of most import features of make.
+stored_target_name := $(TARGET)
+.PHONY: $(stored_target_name)
+$(stored_target_name):
+
 .PHONY: $(TARGET)_clean
-$(TARGET)_clean :
-	rm -rf $(TARGET)_debug $(TARGET)_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
+$(TARGET)_clean : $(stored_target_name)
+	rm -rf $<_debug $<_release $(objects_debug) $(objects_release) $(objects_debug:.o=.d) $(objects_release:.o=.d)
 
 # when make debug at top level, $(TARGET)_debug will be built
 debug: $(TARGET)_debug
