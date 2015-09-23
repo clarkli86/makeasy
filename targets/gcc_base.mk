@@ -31,8 +31,8 @@ endif
 
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
-objects_debug = $(patsubst %.c, debug/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, debug/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, debug/%.o, $(filter %.cc, $(sources)))
-objects_release = $(patsubst %.c, release/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, release/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, release/%.o, $(filter %.cc, $(sources)))
+objects_debug := $(patsubst %.c, debug/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, debug/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, debug/%.o, $(filter %.cc, $(sources)))
+objects_release := $(patsubst %.c, release/%.o, $(filter %.c, $(sources))) $(patsubst %.cpp, release/%.o, $(filter %.cpp, $(sources))) $(patsubst %.cc, release/%.o, $(filter %.cc, $(sources)))
 
 # Remove all references to upper level folders
 objects_debug := $(subst ../,, $(objects_debug))
@@ -53,7 +53,7 @@ all : $(TARGET)_debug $(TARGET)_release
 # Debug target to print variable values
 .PHONY: target
 target:
-	echo $(subst_debug)
+	echo $(sources)
 
 # debug and release are phony targets
 .PHONY: debug
