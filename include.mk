@@ -19,7 +19,6 @@ all :
 .PHONY: clean
 clean :
 
-# @TODO Move this function to gcc_base.mk and the actual makefile to gcc_base_impl.mk
 # $(call add_gcc_target, target_name, sources, include_dirs,
 #   cflags, cppflags, cxxflags, ldflags, ldlibs)
 define add_gcc_target

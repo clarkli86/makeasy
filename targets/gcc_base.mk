@@ -15,8 +15,8 @@
 #   $(TARGET)_LDFLAGS: Linker flags
 #   $(TARGET)_LDLIBS: Libraries to link with
 #
-# N.B. This makefile might be included multiple times for different target names, so any arguments
-# that are used in the rule must be saved using empty targets. See the example of $(TARGET)_clean
+# N.B. This makefile might be included multiple times for different target names, so
+# most variables in this file are expanded as simple variables
 #
 ####################################################################################################
 
