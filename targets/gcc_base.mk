@@ -20,6 +20,17 @@
 #
 ####################################################################################################
 
+# Variables in target and pre-requisites are expanded when makefile is read, but
+# the variables in the rule are expanded when the target is executed. Thus variables like TARGET, CC_FLAGS may have been overwriten when the rule gets executed so
+# they should not be referenced directly in the rule.
+# To overcome this issue, a local variable STORED_TARGET_NAME is created to save the
+# target name when this makefile is read. It is also an empty target so $(TARGET)_clean also remembers the target name when this makefile is read.
+#
+# Although target name can be retrieved by spliting $(TARGET)_clean using underscore, the method above employs one of most import features of make.
+stored_target_name := $(TARGET)
+.PHONY: $(stored_target_name)
+$(stored_target_name):
+
 # Save the arguments in empty targets
 $(TARGET)_debug_CFLAGS := -g $($(TARGET)_CFLAGS) $($(TARGET)_CXXFLAGS) $(addprefix -I, $($(TARGET)_include_dirs))
 $(TARGET)_release_CFLAGS := $($(TARGET)_CFLAGS) $($(TARGET)_CXXFLAGS) $(addprefix -I, $($(TARGET)_include_dirs))
@@ -30,14 +41,8 @@ $(TARGET)_release_LDFLAGS := $($(TARGET)_LDFLAGS)
 $(TARGET)_debug_LDLIBS := -g $($(TARGET)_LDLIBS)
 $(TARGET)_release_LDLIBS := $($(TARGET)_LDLIBS)
 
-.PHONY : $(TARGET)_debug_CFLAGS
-$(TARGET)_debug_CFLAGS :
-.PHONY : $(TARGET)_release_CFLAGS
-$(TARGET)_release_CFLAGS :
-.PHONY : $(TARGET)_debug_CPPFLAGS
-$(TARGET)_debug_CPPFLAGS :
-.PHONY : $(TARGET)_release_CPPFLAGS
-$(TARGET)_release_CPPFLAGS :
+test:
+	echo $(TARGET)_debug_CFLAGS
 
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
@@ -67,12 +72,14 @@ $(TARGET)_release: $(objects_release)
 	$(CXX) $(LDFLAGS) $(release_LDFLAGS) -o $@ $^ $(LDLIBS) $(release_LIBFLAGS)
 
 # Compile differently for debug and release targets
-debug/%.o : $(TARGET)_debug_CFLAGS %.cpp
+# @TODO this debug_CPPFLAGS seems to always trigger a rebuild.
+# Alternative is to save the flags into a file like linux kernel KBuild
+# Another alternative is to define this whole file as a macro so flags are expanded when
+# this macro is called
+debug/%.o : %.cpp
 	mkdir -p $(dir $@)
-# The first pre-requisite is the saved target-specific flags, the second is the source file
-	$(CXX) $($<) -c $(word 2, $^) -o $@
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(debug_CXXFLAGS) $(debug_CPPFLAGS) $(includes) \
-		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CXX) $($(name)_debug_CXXFLAGS) $($(name)_debug_CPPFLAGS) -c $< -o $@
+	$(CXX) $($(name)_debug_CXXFLAGS) $($(name)_debug_CPPFLAGS) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.cpp
 	mkdir -p $(dir $@)
@@ -96,11 +103,10 @@ release/%.o : %.cc
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 debug/%.o : %.c
+	echo $(lastword $^)
 	mkdir -p $(dir $@)
-	$(CC) $(CXXFLAGS) $(CFLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
-		-c $(filter %.c, $^) -o $@
-	$(CC) $(CXXFLAGS) $(CFLAGS) $(debug_CXXFLAGS) $(debug_CFLAGS) $(includes) \
-		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(CC) $($(name)_debug_CXXFLAGS) $($(name)_debug_CFLAGS) -c $< -o $@
+	$(CC) $($(name)_debug_CXXFLAGS) $($(name)_debug_CFLAGS) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 
 release/%.o : %.c
 	mkdir -p $(dir $@)
@@ -108,17 +114,6 @@ release/%.o : %.c
 		-c $(filter %.c, $^) -o $@
 	$(CC) $(CXXFLAGS) $(CFLAGS) $(release_CXXFLAGS) $(release_CFLAGS) $(includes) \
 		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
-
-# Variables in target and pre-requisites are expanded when makefile is read, but
-# the variables in the rule are expanded when the target is executed. Thus variables like TARGET, CC_FLAGS may have been overwriten when the rule gets executed so
-# they should not be referenced directly in the rule.
-# To overcome this issue, a local variable STORED_TARGET_NAME is created to save the
-# target name when this makefile is read. It is also an empty target so $(TARGET)_clean also remembers the target name when this makefile is read.
-#
-# Although target name can be retrieved by spliting $(TARGET)_clean using underscore, the method above employs one of most import features of make.
-stored_target_name := $(TARGET)
-.PHONY: $(stored_target_name)
-$(stored_target_name):
 
 .PHONY: $(TARGET)_clean
 $(TARGET)_clean : $(stored_target_name)

@@ -35,13 +35,17 @@ endef
 define add_gcc_target
 # Call parameter to simple variables for gcc_base.mk
 TARGET := $(1)
-$(TARGET)_sources := $(2)
-$(TARGET)_include_dirs := $(2)
-$(TARGET)_CFLAGS := $(4)
-$(TARGET)_CPPFLAGS := $(5)
-$(TARGET)_CXXFLAGS := $(6)
-$(TARGET)_LDFLAGS := $(7)
-$(TARGET)_LDLIBS := $(8)
+# @TODO $(1)_sources work but $(TARGET)_sources do not?
+# $$(TARGET)_sources also works, why?
+# Is it because when this macro is expanded, TARGET is not defined. So references to it need to be escaped. Otherwise
+# it is expanded to defined _sources := $(2)
+$$(TARGET)_sources := $(2)
+$$(TARGET)_include_dirs := $(3)
+$$(TARGET)_CFLAGS := $(4)
+$$(TARGET)_CPPFLAGS := $(5)
+$$(TARGET)_CXXFLAGS := $(6)
+$$(TARGET)_LDFLAGS := $(7)
+$$(TARGET)_LDLIBS := $(8)
 include $(topdir)/targets/gcc_base.mk
 
 $(eval, $(call, clear_variables))
