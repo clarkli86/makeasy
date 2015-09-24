@@ -97,7 +97,7 @@ clean: $(TARGET)_clean
 # target name when this makefile is read. It is also an empty target so $(TARGET)_clean also remembers the target name when this makefile is read.
 #
 # Although target name can be retrieved by spliting $(TARGET)_clean using underscore, the method above employs one of most import features of make.
-stored_target_name := $(TARGET)
-.PHONY: $(stored_target_name)
-$(stored_target_name):
+# stored_target_name := $(TARGET)
+# .PHONY: $(stored_target_name)
+# $(stored_target_name):
 ############################## NOT USED ###########################################################
