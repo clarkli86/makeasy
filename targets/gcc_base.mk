@@ -30,15 +30,9 @@ $(TARGET)_LDLIBS := $($(TARGET)_LDLIBS)
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
 $(TARGET)_objects := \
 	$(addprefix $(builddir)/, \
-		$(patsubst %.c, $(TARGET)/%.o, $(filter %.c, $($(TARGET)_sources))) \
-		$(patsubst %.cpp, $(TARGET)/%.o, $(filter %.cpp, $($(TARGET)_sources))) \
-		$(patsubst %.cc, $(TARGET)/%.o, $(filter %.cc, $($(TARGET)_sources))))
-
-# @TODO Use absolute path of source files
-# Remove all references to upper level folders
-$(TARGET)_objects := $(subst ../,, $($(TARGET)_objects))
-# Add upper level folders to implicit rule search path
-VPATH += .:..
+		$(patsubst %.c, $(TARGET)/%.o, $(abspath $(filter %.c, $($(TARGET)_sources)))) \
+		$(patsubst %.cpp, $(TARGET)/%.o, $(abspath $(filter %.cpp, $($(TARGET)_sources)))) \
+		$(patsubst %.cc, $(TARGET)/%.o, $(abspath $(filter %.cc, $($(TARGET)_sources)))))
 
 # Include dependencies
 -include $($(TARGET)_objects:.o=.d)
