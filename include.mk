@@ -48,14 +48,16 @@ define add_gcc_arm_none_eabi_target
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
-$$(TARGET)_arm_sources := $(2)
-$$(TARGET)_thumb_sources := $(3)
-$$(TARGET)_include_dirs := $(4)
-$$(TARGET)_CFLAGS := $(5)
-$$(TARGET)_CPPFLAGS := $(6)
-$$(TARGET)_CXXFLAGS := $(7)
-$$(TARGET)_LDFLAGS := $(8)
-$$(TARGET)_LDLIBS := $(9)
+# This is the cross compile prefix for gcc. For example: arm-none-eabi- or arm-v5te-none-eabi-
+$$(TARGET)_cross := $(2)
+$$(TARGET)_arm_sources := $(3)
+$$(TARGET)_thumb_sources := $(4)
+$$(TARGET)_include_dirs := $(5)
+$$(TARGET)_CFLAGS := $(6)
+$$(TARGET)_CPPFLAGS := $(7)
+$$(TARGET)_CXXFLAGS := $(8)
+$$(TARGET)_LDFLAGS := $(9)
+$$(TARGET)_LDLIBS := $(10)
 
 include $(topdir)/targets/gcc_arm_none_eabi.mk
 

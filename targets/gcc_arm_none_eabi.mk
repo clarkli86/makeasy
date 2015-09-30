@@ -7,6 +7,7 @@
 #
 # Variables that need to be defined outside this makefile:
 #   TARGET: Target application name
+#   $(TARGET)_cross: Cross-compiler prefix
 #   $(TARGET)_arm_sources: C/C++ sources that need to be compiled to ARM instructions
 #   $(TARGET)_thumb_sources: C/C++ sources that need to be compiled to THUMB instructions
 #   $(TARGET)_include_dirs: C/C++ header directories
@@ -33,7 +34,7 @@ $(TARGET)_thumb_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARG
 all : $(TARGET)
 
 $(TARGET) : $($(TARGET)_arm_objects) $($(TARGET)_thumb_objects)
-	$(call link.cxx.app, $(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
+	$(call link.cxx.app, $($@_cross)$(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
 
 # $(call instruction_set)
 # Must be called from recipes. It uses automatic variable $@
@@ -52,23 +53,23 @@ $(builddir)/$(TARGET)/%.o : target = $(word 2, $(subst /, , $@))
 # arm_instruction_set function is used to check whether target is an arm object or thumb object
 $(builddir)/$(TARGET)/%.o : %.cpp
 	$(call mk_obj_dir)
-	$(call compile.cxx, $(CXX), $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
-	$(call generate_dependency, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call compile.cxx, $($(target)_cross)$(CXX), $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call generate_dependency, $($(target)_cross)$(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 
 $(builddir)/$(TARGET)/%.o : %.cc
 	$(call mk_obj_dir)
-	$(call compile.cxx, $(CXX), $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
-	$(call generate_dependency, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call compile.cxx, $($(target)_cross)$(CXX), $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call generate_dependency, $($(target)_cross)$(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 
 $(builddir)/$(TARGET)/%.o : %.c
 	$(call mk_obj_dir)
-	$(call compile.cxx, $(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
-	$(call generate_dependency, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call compile.cxx, $($(target)_cross)$(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call generate_dependency, $($(target)_cross)$(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
 
 $(builddir)/$(TARGET)/%.o : %.s
 	$(call mk_obj_dir)
-	$(call compile.cxx, $(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
-	$(call generate_dependency, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call compile.cxx, $($(target)_cross)$(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call generate_dependency, $($(target)_cross)$(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
 
 .PHONY: $(TARGET)_clean
 # Retrieve target name from $@
