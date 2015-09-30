@@ -7,7 +7,6 @@
 #
 # Variables that need to be defined outside this makefile:
 #   TARGET: Target application name
-#   $(TARGET)_asm_sources: Assembly sources that need to be compiled and linked
 #   $(TARGET)_arm_sources: C/C++ sources that need to be compiled to ARM instructions
 #   $(TARGET)_thumb_sources: C/C++ sources that need to be compiled to THUMB instructions
 #   $(TARGET)_include_dirs: C/C++ header directories
@@ -24,17 +23,16 @@
 
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
-$(TARGET)_asm_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_asm_sources))
 $(TARGET)_arm_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_arm_sources))
 $(TARGET)_thumb_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_thumb_sources))
 
 # Include dependencies
--include $($(TARGET)_asm_objects:.o=.d) $($(TARGET)_arm_objects:.o=.d) $($(TARGET)_thumb_objects:.o=.d)
+-include $($(TARGET)_arm_objects:.o=.d) $($(TARGET)_thumb_objects:.o=.d)
 
 # Add to dependency list of all
 all : $(TARGET)
 
-$(TARGET) : $($(TARGET)_asm_objects) $($(TARGET)_arm_objects) $($(TARGET)_thumb_objects)
+$(TARGET) : $($(TARGET)_arm_objects) $($(TARGET)_thumb_objects)
 	$(call link.cxx.app, $(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
 
 # $(call instruction_set)
@@ -67,12 +65,16 @@ $(builddir)/$(TARGET)/%.o : %.c
 	$(call compile.cxx, $(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
 	$(call generate_dependency, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
 
+$(builddir)/$(TARGET)/%.o : %.s
+	$(call mk_obj_dir)
+	$(call compile.cxx, $(CC),  $(arm_instruction_set) $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call generate_dependency, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+
 .PHONY: $(TARGET)_clean
 # Retrieve target name from $@
 $(TARGET)_clean : target = $(@:_clean=)
 $(TARGET)_clean :
 	$(RM) -rf $(target) \
-		$($(target)_asm_objects) $($(target)_asm_objects:.o=.d) \
 		$($(target)_arm_objects) $($(target)_arm_objects:.o=.d) \
 		$($(target)_thumb_objects) $($(target)_thumb_objects:.o=.d)
 
