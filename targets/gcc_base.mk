@@ -20,12 +20,6 @@
 #
 ####################################################################################################
 
-# Save the arguments in empty targets
-$(TARGET)_CFLAGS := $($(TARGET)_CFLAGS) $($(TARGET)_CXXFLAGS) $(addprefix -I, $($(TARGET)_include_dirs))
-$(TARGET)_CPPFLAGS := $($(TARGET)_CPPFLAGS) $($(TARGET)_CXXFLAGS) $(addprefix -I, $($(TARGET)_include_dirs))
-$(TARGET)_LDFLAGS := $($(TARGET)_LDFLAGS)
-$(TARGET)_LDLIBS := $($(TARGET)_LDLIBS)
-
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
 $(TARGET)_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_sources))
@@ -57,7 +51,6 @@ $(builddir)/$(TARGET)/%.o : %.cpp
 	$(call compile.cxx, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 	$(call generate_dependency, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 
-# @TODO may need to use static rule when having arm/thumb targets
 $(builddir)/$(TARGET)/%.o : %.cc
 	$(call mk_obj_dir)
 	$(call compile.cxx, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
