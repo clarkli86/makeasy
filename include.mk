@@ -25,7 +25,6 @@ clean :
 # $(call add_gcc_target, target_name, sources, include_dirs,
 #   cflags, cppflags, cxxflags, ldflags, ldlibs)
 define add_gcc_target
-# Call parameter to simple variables for gcc_base.mk
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
@@ -38,5 +37,27 @@ $$(TARGET)_LDFLAGS := $(7)
 $$(TARGET)_LDLIBS := $(8)
 
 include $(topdir)/targets/gcc_base.mk
+
+endef
+
+# @TODO Pass in compiler path by argument
+# $(call add_gcc_arm_none_eabi_target, target_name, asm_sources, arm_sources, thumb_sources,
+#   include_dirs, cflags, cppflags, cxxflags, ldflags, ldlibs)
+# Add ARM bare-metal targets
+define add_gcc_arm_none_eabi_target
+TARGET := $(1)
+# When this macro is expanded, TARGET is not defined. All references to it will empty.
+# Escape $(TARGET) so it can be expanded after TARGET is defined
+$$(TARGET)_asm_sources := $(2)
+$$(TARGET)_arm_sources := $(3)
+$$(TARGET)_thumb_sources := $(4)
+$$(TARGET)_include_dirs := $(5)
+$$(TARGET)_CFLAGS := $(6)
+$$(TARGET)_CPPFLAGS := $(7)
+$$(TARGET)_CXXFLAGS := $(8)
+$$(TARGET)_LDFLAGS := $(9)
+$$(TARGET)_LDLIBS := $(10)
+
+include $(topdir)/targets/gcc_arm_none_eabi.mk
 
 endef
