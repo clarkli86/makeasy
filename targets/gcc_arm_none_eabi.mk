@@ -81,16 +81,3 @@ $(TARGET)_clean :
 
 # when make debug at top level, $(TARGET)_debug will be built
 clean: $(TARGET)_clean
-
-############################## NOT USED ###########################################################
-# Variables in target and pre-requisites are expanded when makefile is read, but
-# the variables in the rule are expanded when the target is executed. Thus variables like TARGET, CC_FLAGS may have been overwriten when the rule gets executed so
-# they should not be referenced directly in the rule.
-# To overcome this issue, a local variable STORED_TARGET_NAME is created to save the
-# target name when this makefile is read. It is also an empty target so $(TARGET)_clean also remembers the target name when this makefile is read.
-#
-# Although target name can be retrieved by spliting $(TARGET)_clean using underscore, the method above employs one of most import features of make.
-# stored_target_name := $(TARGET)
-# .PHONY: $(stored_target_name)
-# $(stored_target_name):
-############################## NOT USED ###########################################################

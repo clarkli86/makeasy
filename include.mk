@@ -40,7 +40,6 @@ include $(topdir)/targets/gcc_base.mk
 
 endef
 
-# @TODO Pass in compiler path by argument
 # $(call add_gcc_arm_none_eabi_target, target_name, arm_sources, thumb_sources,
 #   include_dirs, cflags, cppflags, cxxflags, ldflags, ldlibs)
 # Add ARM bare-metal targets
