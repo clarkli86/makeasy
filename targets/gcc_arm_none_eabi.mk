@@ -27,6 +27,9 @@
 $(TARGET)_arm_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_arm_sources))
 $(TARGET)_thumb_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_thumb_sources))
 
+# Add include dirs to CXXFLAGS
+$(TARGET)_CXXFLAGS += $(addprefix -I, $($(TARGET)_include_dirs))
+
 # Include dependencies
 -include $($(TARGET)_arm_objects:.o=.d) $($(TARGET)_thumb_objects:.o=.d)
 

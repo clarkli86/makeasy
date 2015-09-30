@@ -24,6 +24,9 @@
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
 $(TARGET)_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_sources))
 
+# Add include dirs to CXXFLAGS
+$(TARGET)_CXXFLAGS += $(addprefix -I, $($(TARGET)_include_dirs))
+
 # Include dependencies
 -include $($(TARGET)_objects:.o=.d)
 
