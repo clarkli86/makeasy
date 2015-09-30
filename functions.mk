@@ -14,6 +14,10 @@ source_to_obj = \
 	$(patsubst %.cpp, $(1)/%.o, $(abspath $(filter %.cpp, $(2)))) \
 	$(patsubst %.cc, $(1)/%.o, $(abspath $(filter %.cc, $($(2)))))
 
+# $(call to_include_dirs, include_dirs_var)
+# Add gcc-style include dirs
+to_include_dir = $(addprefix -I, $($(1)))
+
 # $(call mk_obj_dir)
 # Must be used in recipes only. It references to automatic variable $@
 define mk_obj_dir

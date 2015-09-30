@@ -25,7 +25,10 @@
 $(TARGET)_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_sources))
 
 # Add include dirs to CXXFLAGS
-$(TARGET)_CXXFLAGS += $(addprefix -I, $($(TARGET)_include_dirs))
+to_include_dir = $(addprefix -I, $($(1)))
+# Be careful the space before the first argument to to_include_dir matters
+$(TARGET)_CXXFLAGS += $(call to_include_dir,$(TARGET)_include_dirs)
+#$(TARGET)_CXXFLAGS += $(addprefix -I, $($(TARGET)_include_dirs))
 
 # Include dependencies
 -include $($(TARGET)_objects:.o=.d)
