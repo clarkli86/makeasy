@@ -11,6 +11,9 @@ topdir := $(dir $(lastword $(MAKEFILE_LIST)))
 # Folder to place interdiatary objects
 builddir ?= build
 
+# Include common functions. topdir is defined in
+include $(topdir)/functions.mk
+
 # Define this target before any other
 .PHONY: all
 all :

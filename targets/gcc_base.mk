@@ -28,11 +28,7 @@ $(TARGET)_LDLIBS := $($(TARGET)_LDLIBS)
 
 # Create objects for all .c and .cpp in current directory
 # Filter sources before patsubst otherwise .cpp/.c will appear in the final value of objects_debug
-$(TARGET)_objects := \
-	$(addprefix $(builddir)/, \
-		$(patsubst %.c, $(TARGET)/%.o, $(abspath $(filter %.c, $($(TARGET)_sources)))) \
-		$(patsubst %.cpp, $(TARGET)/%.o, $(abspath $(filter %.cpp, $($(TARGET)_sources)))) \
-		$(patsubst %.cc, $(TARGET)/%.o, $(abspath $(filter %.cc, $($(TARGET)_sources)))))
+$(TARGET)_objects := $(call source_to_obj, $(builddir)/$(TARGET), $($(TARGET)_sources))
 
 # Include dependencies
 -include $($(TARGET)_objects:.o=.d)
@@ -41,7 +37,7 @@ $(TARGET)_objects := \
 all : $(TARGET)
 
 $(TARGET) : $($(TARGET)_objects)
-	$(CXX) $($@_LDFLAGS) -o $@ $^ $($@_LIBFLAGS)
+	$(call link.cxx.app, $(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
 
 # Getting target name from $@ seems the easiest way to get the original TARGET value.
 # The following approach have been tried and failed:
@@ -57,28 +53,26 @@ $(TARGET) : $($(TARGET)_objects)
 #  * Define this whole file as a macro so flags are expanded when this macro is called
 $(builddir)/$(TARGET)/%.o : target = $(word 2, $(subst /, , $@))
 $(builddir)/$(TARGET)/%.o : %.cpp
-	mkdir -p $(dir $@)
-	$(CXX) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS) -c $< -o $@
-	$(CXX) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS) \
-		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(call mk_obj_dir)
+	$(call compile.cxx, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call generate_dependency, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 
+# @TODO may need to use static rule when having arm/thumb targets
 $(builddir)/$(TARGET)/%.o : %.cc
-	mkdir -p $(dir $@)
-	$(CXX) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS) -c $< -o $@
-	$(CXX) $($(target)_CXXFLAGS) $($(target)_CPPFLAGS) \
-		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(call mk_obj_dir)
+	$(call compile.cxx, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
+	$(call generate_dependency, $(CXX), $($(target)_CXXFLAGS) $($(target)_CPPFLAGS))
 
 $(builddir)/$(TARGET)/%.o : %.c
-	mkdir -p $(dir $@)
-	$(CC) $($(target)_CXXFLAGS) $($(target)_CFLAGS) -c $< -o $@
-	$(CC) $($(target)_CXXFLAGS) $($(target)_CFLAGS) \
-		-MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
+	$(call mk_obj_dir)
+	$(call compile.cxx, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
+	$(call generate_dependency, $(CC), $($(target)_CXXFLAGS) $($(target)_CFLAGS))
 
 .PHONY: $(TARGET)_clean
 # Retrieve target name from $@
 $(TARGET)_clean : target = $(@:_clean=)
 $(TARGET)_clean :
-	rm -rf $(target) $($(target)_objects) $($(target)_objects:.o=.d)
+	$(RM) -rf $(target) $($(target)_objects) $($(target)_objects:.o=.d)
 
 # when make debug at top level, $(TARGET)_debug will be built
 clean: $(TARGET)_clean
