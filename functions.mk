@@ -12,7 +12,7 @@ source_to_obj = \
 	$(patsubst %.s, $(1)/%.o, $(abspath $(filter %.s, $(2)))) \
 	$(patsubst %.c, $(1)/%.o, $(abspath $(filter %.c, $(2)))) \
 	$(patsubst %.cpp, $(1)/%.o, $(abspath $(filter %.cpp, $(2)))) \
-	$(patsubst %.cc, $(1)/%.o, $(abspath $(filter %.cc, $($(2)))))
+	$(patsubst %.cc, $(1)/%.o, $(abspath $(filter %.cc, $(2))))
 
 # $(call to_include_dirs, include_dirs_var)
 # Add gcc-style include dirs
