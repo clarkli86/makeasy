@@ -35,7 +35,7 @@ $(TARGET)_CXXFLAGS += $(call to_include_dir,$(TARGET)_include_dirs)
 all : $(TARGET)
 
 $(TARGET) : $($(TARGET)_objects)
-	$(call link.cxx.app, $(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
+	$(call link.cxx.app, $(CXX), $($@_LDFLAGS), $($@_LDLIBS))
 
 # Getting target name from $@ seems the easiest way to get the original TARGET value.
 # The following approach have been tried and failed:

@@ -38,7 +38,7 @@ $(TARGET)_CXXFLAGS += $(call to_include_dir,$(TARGET)_include_dirs)
 all : $(TARGET)
 
 $(TARGET) : $($(TARGET)_arm_objects) $($(TARGET)_thumb_objects)
-	$(call link.cxx.app, $($@_cross)$(CXX), $($@_LDFLAGS), $($@_LIBFLAGS))
+	$(call link.cxx.app, $($@_cross)$(CXX), $($@_LDFLAGS), $($@_LDLIBS))
 
 # $(call instruction_set)
 # Must be called from recipes. It uses automatic variable $@
