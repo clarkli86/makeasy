@@ -14,9 +14,8 @@
 #
 ####################################################################################################
 
-# Add to dependency list of all
-all : $(TARGET)
+# Do not add to dependency list of all
 
 .PHONY: $(TARGET)
 $(TARGET): $($(TARGET)_bin)
-	stflash write $^ $($(TARGET)_offset)
+	st-flash write $^ $($(TARGET)_offset)

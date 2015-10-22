@@ -75,3 +75,17 @@ $$(TARGET)_elf := $(3)
 include $(topdir)/targets/objcopy.mk
 
 endef
+
+# $(call add_stlink_target, target_name, target_bin, memory_offset)
+# Add stlink target. Program binary file to the specified memory offset
+define add_stlink_target
+TARGET := $(1)
+# When this macro is expanded, TARGET is not defined. All references to it will empty.
+# Escape $(TARGET) so it can be expanded after TARGET is defined
+# This is the cross compile prefix for gcc. For example: arm-none-eabi- or arm-v5te-none-eabi-
+$$(TARGET)_bin := $(2)
+$$(TARGET)_offset := $(3)
+
+include $(topdir)/targets/stlink.mk
+
+endef
