@@ -19,7 +19,7 @@
 all : $(TARGET)
 
 $(TARGET): $($(TARGET)_elf)
-	$($(TARGET)_cross)objcopy -O binary $^ $@
+	$($(@)_cross)objcopy -O binary $^ $@
 
 .PHONY: $(TARGET)_clean
 # Retrieve target name from $@
