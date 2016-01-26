@@ -26,7 +26,7 @@ endef
 
 # $(call generate_dependency, compiler, flags)
 # Must be used in recipes only. It references to automatic variable $< and $@
-define generate_dependecy
+define generate_dependency
 	$(1) $(2) -MM $< | sed 's|[a-zA-Z0-9_-]*\.o|$(dir $@)&|' > $(@:.o=.d)
 endef
 
