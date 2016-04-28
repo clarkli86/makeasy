@@ -24,7 +24,7 @@ clean :
 
 # $(call add_gcc_target, target_name, sources, include_dirs,
 #   cflags, cppflags, cxxflags, ldflags, ldlibs)
-define add_gcc_target
+define add_gcc_target_helper
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
@@ -39,11 +39,15 @@ $$(TARGET)_LDLIBS := $(8)
 include $(topdir)/targets/gcc_base.mk
 
 endef
+# Helper to allow calling add_gcc_target_helper without eval
+define add_gcc_target
+$(eval $(call add_gcc_target_helper, $(1), $(2), $(3), $(4), $(5), $(6), $(7), $(8)))
+endef
 
 # $(call add_gcc_arm_none_eabi_target, arm-none-eabi-, target_name, arm_sources, thumb_sources,
 #   include_dirs, cflags, cppflags, cxxflags, ldflags, ldlibs)
 # Add ARM bare-metal targets
-define add_gcc_arm_none_eabi_target
+define add_gcc_arm_none_eabi_target_helper
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
@@ -61,10 +65,13 @@ $$(TARGET)_LDLIBS := $(10)
 include $(topdir)/targets/gcc_arm_none_eabi.mk
 
 endef
+define add_gcc_arm_none_eabi_target
+$(eval $(call add_gcc_target_helper, $(1), $(2), $(3), $(4), $(5), $(6), $(7), $(8)), $(9), $(10))
+endef
 
 # $(call add_gcc_objcopy_target, arm-none-eabi-, target_name, target_elf)
 # Add objcopy target. Create binary target from ELF file
-define add_objcopy_target
+define add_objcopy_target_helper
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
@@ -75,10 +82,13 @@ $$(TARGET)_elf := $(3)
 include $(topdir)/targets/objcopy.mk
 
 endef
+define add_objcopy_target
+$(eval $(call add_objcopy_target_helper, $(1), $(2), $(3)))
+endef
 
 # $(call add_stlink_target, target_name, target_bin, memory_offset)
 # Add stlink target. Program binary file to the specified memory offset
-define add_stlink_target
+define add_stlink_target_helper
 TARGET := $(1)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
@@ -88,4 +98,7 @@ $$(TARGET)_offset := $(3)
 
 include $(topdir)/targets/stlink.mk
 
+endef
+define add_stlink_target
+$(eval $(call add_stlink_target_helper, $(1), $(2), $(3)))
 endef
