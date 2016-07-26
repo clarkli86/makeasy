@@ -4,11 +4,11 @@ This is a template makefile for small-scale applications
 ```Makefile
 include makeasy/include.mk
 # First target is a debug build with -g flags
-$(eval $(call add_gcc_target, test_debug, c_source.c main.cpp, , -std=c99 -g -pg, -std=c++11 -g -pg, -Wall -Werror, , ))
+$(call add_gcc_target, test_debug, c_source.c main.cpp, , -std=c99 -g -pg, -std=c++11 -g -pg, -Wall -Werror, , )
 # Second target is a release build without -g flags
-$(eval $(call add_gcc_target, test_release, c_source.c main.cpp, , , -std=c++11, -Wall -Werror, , ))
+$(call add_gcc_target, test_release, c_source.c main.cpp, , , -std=c++11, -Wall -Werror, , )
 # Create binary file from ELF
-$(eval $(call add_objcopy_target, test_release.bin,, test_release))
+$(call add_objcopy_target, test_release.bin,, test_release)
 # More targets
 ```
 
