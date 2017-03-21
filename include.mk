@@ -48,11 +48,11 @@ endef
 #   include_dirs, cflags, cppflags, cxxflags, ldflags, ldlibs)
 # Add ARM bare-metal targets
 define add_gcc_arm_none_eabi_target_helper
-TARGET := $(1)
+TARGET := $(2)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
 # This is the cross compile prefix for gcc. For example: arm-none-eabi- or arm-v5te-none-eabi-
-$$(TARGET)_cross := $(2)
+$$(TARGET)_cross := $(1)
 $$(TARGET)_arm_sources := $(3)
 $$(TARGET)_thumb_sources := $(4)
 $$(TARGET)_include_dirs := $(5)
@@ -66,17 +66,17 @@ include $(topdir)/targets/gcc_arm_none_eabi.mk
 
 endef
 define add_gcc_arm_none_eabi_target
-$(eval $(call add_gcc_target_helper, $(1), $(2), $(3), $(4), $(5), $(6), $(7), $(8)), $(9), $(10))
+$(eval $(call add_gcc_arm_none_eabi_target_helper, $(1), $(2), $(3), $(4), $(5), $(6), $(7), $(8), $(9), $(10)))
 endef
 
 # $(call add_gcc_objcopy_target, arm-none-eabi-, target_name, target_elf)
 # Add objcopy target. Create binary target from ELF file
 define add_objcopy_target_helper
-TARGET := $(1)
+TARGET := $(2)
 # When this macro is expanded, TARGET is not defined. All references to it will empty.
 # Escape $(TARGET) so it can be expanded after TARGET is defined
 # This is the cross compile prefix for gcc. For example: arm-none-eabi- or arm-v5te-none-eabi-
-$$(TARGET)_cross := $(2)
+$$(TARGET)_cross := $(1)
 $$(TARGET)_elf := $(3)
 
 include $(topdir)/targets/objcopy.mk
