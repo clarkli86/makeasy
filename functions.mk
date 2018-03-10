@@ -39,5 +39,5 @@ endef
 # $(call link.cxx.app, linker, ldflags, ldlibs)
 # Must be used in recipes only. It references to automatic variable $< and $@
 define link.cxx.app
-	$(1) $(2) -o $@ $^ $(3)
+	$(1) $^ -o $@ $(2) $(3)
 endef
